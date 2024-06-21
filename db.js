@@ -1,6 +1,8 @@
 const mongoose =require("mongoose");
+require("dotenv").config();
+const mongoUrl = process.env.dbUrl;
+// const mongoUrl= "mongodb://localhost:27017/votingApp";
 
-const mongoUrl= "mongodb://localhost:27017/votingApp";
 
 mongoose.connect(mongoUrl,{
     useNewUrlParser:true,
