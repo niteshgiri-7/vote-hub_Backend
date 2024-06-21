@@ -45,8 +45,8 @@ Router.post("/vote/:id", jwtVerify, isRoleUser, validateId, isVoted, async (req,
 
         candidate.votes.push({ user: userId });
         candidate.voteCount++;
-
         await candidate.save();
+
         user.isVoted = true;
         await user.save();
         res.status(200).json({ message: "voting successfully done"})
@@ -59,4 +59,32 @@ Router.post("/vote/:id", jwtVerify, isRoleUser, validateId, isVoted, async (req,
 
 })
 
+Router.get("/vote/count",async(req,res)=>{
+    try{
+    const candidate = await Candidate.find().sort({voteCount:'desc'});
+    const record = candidate.map((candidateData)=>{
+                   return {
+                    name:candidateData.name,
+                    party: candidateData.party,
+                    voteCount: candidateData.voteCount
+                   }
+    })
+    res.status(200).json({records:record});
+}
+catch(err){
+    console.log(err)
+    res.status(500).json(err.message);
+}
+})
+
+Router.get("/all",async(req,res)=>{
+    try{
+    const candidate = await Candidate.find().select('name party ');
+    res.status(200).json({canidates:candidate});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({error:err.message});
+    }
+})
 module.exports = Router;

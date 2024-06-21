@@ -17,7 +17,7 @@ const jwtVerify =(req,res,next)=>{
     try{
     const token = authorization.split(' ')[1];
     const decoded =  jwt.verify(token,secretKey);
-    console.log(decoded);
+    
     req.user = decoded;
     next();
     }

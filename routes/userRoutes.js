@@ -2,6 +2,8 @@ const Router = require("express").Router();
 const User = require("../models/users");
 const { jwtVerify, generateToken } = require("../authMiddleware/jwtAuth");
 const validateId = require("../middlewares/validateId");
+
+
 Router.post("/signUp", async (req, res) => {
     try {
         const user = req.body;
