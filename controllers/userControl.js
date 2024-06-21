@@ -1,4 +1,6 @@
 const User = require("../models/users");
+const {generateToken} = require("../authMiddleware/jwtAuth");
+
 
 module.exports.signUp=async (req, res) => {
     try {
