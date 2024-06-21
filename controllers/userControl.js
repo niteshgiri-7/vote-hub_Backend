@@ -5,7 +5,10 @@ const {generateToken} = require("../authMiddleware/jwtAuth");
 module.exports.signUp=async (req, res) => {
     try {
         const user = req.body;
-
+        const adminExist = await User.findOne({role:'admin'});
+        if(user.role==='admin' &&adminExist){
+          return  res.status(403).json({message:"Admin already exists"});
+        }
         const newUser = new User(user);
         const response = await newUser.save();
         const payLoad = {
