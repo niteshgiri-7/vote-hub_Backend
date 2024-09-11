@@ -1,7 +1,7 @@
 # Endpoints
  ## Sign Up
 - Register a new user in the system. If a user tries to register as an admin and an admin already exists, it will return an error.
-- 
+  
 ## POST /signup
 -Request Body:
 ```
@@ -69,7 +69,7 @@ Request Body:
 # View Profile
 
 - View the profile of a user by their ID.
-- 
+  
 ## GET /profile/:id
 
 - Parameters:
