@@ -32,7 +32,7 @@
 ```
 # Login
 
-## Login a user with citizenship number and password.
+- Login a user with citizenship number and password.
 
 ## POST /login
 Request Body:
