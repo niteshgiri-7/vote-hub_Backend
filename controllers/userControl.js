@@ -101,8 +101,8 @@ module.exports.joinElection = async (req, res) => {
     if (!election)
       return res.status(404).json({ message: "Election Not found" });
     const user = await User.findById(userId);
-
-    if (user.joinedElection.indexOf(id) !== -1)
+    
+    if (user?.joinedElection.indexOf(id) !== -1)
       return res
         .status(409)
         .json({ message: "You have already joined that election" });

@@ -24,7 +24,7 @@ const election = new schema({
     },
     candidates:[{
         type:schema.Types.ObjectId,
-        ref:"candidate"
+        ref:"Candidate"
     }]
 })
 

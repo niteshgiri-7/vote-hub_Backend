@@ -16,20 +16,6 @@ const candidate = new schema({
         default:null,
        
     },
-    votes: [
-        {
-            user: {
-                type: mongoose.Types.ObjectId,
-                ref: "users"
-            }
-        },
-        {
-            createddAt: {
-                type: Date,
-                default: Date.now
-            }
-        }
-    ],
     voteCount: {
         type: Number,
         default: 0
@@ -41,7 +27,7 @@ const candidate = new schema({
     },
     electionId:{
         type:schema.Types.ObjectId,
-        ref:"election"
+        ref:"Election"
     }
 })
 
