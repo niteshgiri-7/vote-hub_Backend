@@ -12,7 +12,7 @@ const election = new schema({
     },
     startsAt:{
         type:Date,
-        default:Date.now,
+        required:true,
     },
     endsAt:{
         type: Date,
@@ -21,8 +21,12 @@ const election = new schema({
     createdBy:{
         type:schema.Types.ObjectId,
         ref:"users",
-    }
+    },
+    candidates:[{
+        type:schema.Types.ObjectId,
+        ref:"candidate"
+    }]
 })
 
-const Election = schema.model("Election",election);
+const Election = mongoose.model("Election",election);
 module.exports = Election;

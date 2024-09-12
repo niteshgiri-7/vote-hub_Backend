@@ -13,7 +13,7 @@ const candidate = new schema({
     },
     party: {
         type: String,
-        required: true,
+        default:null,
        
     },
     votes: [
@@ -38,6 +38,10 @@ const candidate = new schema({
         type:String,
         required:true,
         unique:true
+    },
+    electionId:{
+        type:schema.Types.ObjectId,
+        ref:"election"
     }
 })
 

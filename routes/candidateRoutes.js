@@ -1,14 +1,14 @@
 const Router = require("express").Router();
 const { jwtVerify } = require("../authMiddleware/jwtAuth");
-const checkRole = require("../middlewares/checkRole");
 const validateId = require("../middlewares/validateId");
 const isRoleUser = require("../middlewares/isRoleUser");
 const isVoted = require("../middlewares/isVoted");
 const candidateControl = require("../controllers/CandidateControl");
+const isAdmin = require("../middlewares/isAdmin");
+const validateAdminCandidateLink = require("../middlewares/adminLinkValidation/validateAdminCandidateLink");
+Router.post("/add", jwtVerify, isAdmin, candidateControl.addNewCandidate);
 
-Router.post("/add", jwtVerify, checkRole, candidateControl.addNewCandidate);
-
-Router.delete("/remove/:id", jwtVerify, checkRole, validateId, candidateControl.removeCandidate);
+Router.delete("/remove/:id", jwtVerify, isAdmin, validateId, validateAdminCandidateLink, candidateControl.removeCandidate);
 
 Router.post("/vote/:id", jwtVerify, isRoleUser, validateId, isVoted, candidateControl.vote);
 

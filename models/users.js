@@ -25,6 +25,11 @@ const userSchema = new schema({
          default:"voter",
          required:true
     },
+    key:{
+        type:String,
+        required:false,
+        default:null,
+    },
     citizenshipNo:{
         type:String,
         required:true,
