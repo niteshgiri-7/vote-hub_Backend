@@ -69,7 +69,7 @@ module.exports.viewProfile = async (req, res) => {
     res.status(200).json({ userdata: userHere });
   } catch (err) {
     console.log(err.message);
-    return res.status(404).json({ message: "user not found" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
