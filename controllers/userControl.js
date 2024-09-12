@@ -1,4 +1,5 @@
 const User = require("../models/users");
+const Election = require("../models/election");
 const { generateToken } = require("../authMiddleware/jwtAuth");
 
 module.exports.signUp = async (req, res) => {
@@ -47,14 +48,12 @@ module.exports.login = async (req, res) => {
       name: userHere.name,
     };
     const token = generateToken(payLoad);
-    res
-      .status(200)
-      .json({
-        token: token,
-        message: "login successful",
-        id: userHere.id,
-        role: userHere.role,
-      });
+    res.status(200).json({
+      token: token,
+      message: "login successful",
+      id: userHere.id,
+      role: userHere.role,
+    });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({ error: "internal server error" });
@@ -66,7 +65,7 @@ module.exports.viewProfile = async (req, res) => {
     const { id } = req.params;
     const userHere = await User.findById(id).select("-password ");
     if (!userHere) return res.status(404).json({ message: "user not found" });
-  
+
     res.status(200).json({ userdata: userHere });
   } catch (err) {
     console.log(err.message);
@@ -91,5 +90,29 @@ module.exports.changePassword = async (req, res) => {
     return res.status(200).json({ message: "password changed successfully" });
   } catch (err) {
     console.log(err.message);
+  }
+};
+
+module.exports.joinElection = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const election = await Election.findById(id);
+    if (!election)
+      return res.status(404).json({ message: "Election Not found" });
+    const user = await User.findById(userId);
+
+    if (user.joinedElection.indexOf(id) !== -1)
+      return res
+        .status(409)
+        .json({ message: "You have already joined that election" });
+    else user.joinedElection.push(id);
+    const savedUser = await user.save();
+    return res
+      .status(200)
+      .json({ message: "election joined", user: savedUser });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+    console.log(error.message);
   }
 };

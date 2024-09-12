@@ -14,7 +14,7 @@ module.exports.createElection = async (req, res) => {
       createdBy: admin.id,
     });
     const savedElection = await newElection.save();
-    res.status(200).json({ response: savedElection });
+   return res.status(200).json({ response: savedElection });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: "Internal Server Error" });

@@ -9,9 +9,10 @@ module.exports.addNewCandidate = async (req, res) => {
       return res.status(400).json({ error: "incomplete data" });
     }
     const regNum = await Candidate.findOne({ regNo: regNo });
-    if (regNum) {
+    if (regNum) 
       return res.status(409).json({ error: "regNo already exists" });
-    }
+    const election = await Election.findById(electionId);
+    if(!election) return res.status(404).json({message:"Invalid electionId"})
     const newCandidate = new Candidate({
       name,
       age,
@@ -19,14 +20,12 @@ module.exports.addNewCandidate = async (req, res) => {
       electionId,
     });
     const savedCandidate = await newCandidate.save();
-    const election = await Election.findById(electionId);
-    election.candidates.push(savedCandidate._id);
+   
+    election?.candidates.push(savedCandidate._id);
     const savedElection = await election.save();
-    console.log(savedElection);
-    res
+    return res
       .status(200)
       .json({ message: "candidate saved", candidate: savedCandidate });
-    console.log(newCandidate);
   } catch (err) {
     res.status(500).json({ error: "internal server error" });
     console.log(err.message);
@@ -39,9 +38,16 @@ module.exports.removeCandidate = async (req, res) => {
     const removedCandidate = await Candidate.findByIdAndDelete(id);
     if (!removedCandidate)
       return res.status(404).json({ message: "candidate not found" });
-    res.status(200).json({ message: "candidate deleted" });
+    const election = req.election;
+    const newCandidates = election.candidates.filter(
+      (candidate) => candidate._id.toString() !== id
+    );
+    await Election.findByIdAndUpdate(election._id, {
+      candidates: newCandidates,
+    });
+    return res.status(200).json({ message: "candidate deleted" });
   } catch (err) {
-    res.status(500).json({ error: "unable to delete" });
+    res.status(500).json({ error: "Internal Server Error" });
     console.log(err.message);
   }
 };

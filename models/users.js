@@ -39,6 +39,10 @@ const userSchema = new schema({
         type:String,
         required:true
     },
+    joinedElection:[{
+        type:schema.Types.ObjectId,
+        ref:"Election"
+    }],
     votedElection:[{
         type:schema.Types.ObjectId,
         ref:'Election',
