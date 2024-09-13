@@ -100,8 +100,8 @@ module.exports.joinElection = async (req, res) => {
     const election = await Election.findById(id);
     if (!election)
       return res.status(404).json({ message: "Election Not found" });
-    const user = await User.findById(userId);
-    
+    const user = await User.findById(userId).select("-password");
+
     if (user?.joinedElection.indexOf(id) !== -1)
       return res
         .status(409)
@@ -113,6 +113,6 @@ module.exports.joinElection = async (req, res) => {
       .json({ message: "election joined", user: savedUser });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
-    console.log(error.message);
+    console.log("hi",error.message);
   }
 };

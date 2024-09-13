@@ -40,7 +40,9 @@ module.exports.viewAllElectionVoter = async (req, res) => {
     const userId = req.user?.id;
 
     // Find the user and populate the 'joinedElection' field
-    const user = await User.findById(userId).populate("joinedElection").populate("votedElection");
+    const user = await User.findById(userId)
+      .populate("joinedElection")
+      .populate("votedElection");
 
     // Check if user exists
     if (!user) {
@@ -50,17 +52,38 @@ module.exports.viewAllElectionVoter = async (req, res) => {
     // Send the populated elections data
     res.status(200).json({
       joinedElections: user.joinedElection,
-      votedElections :user.votedElection,
+      votedElections: user.votedElection,
     });
 
     // Log the populated data for debugging
     console.log({
       joinedElections: user.joinedElection,
-      votedElections :user.votedElection
+      votedElections: user.votedElection,
     });
   } catch (error) {
     // Handle errors and log them
     res.status(500).json({ message: "Internal Server Error" });
     console.log(error.message);
+  }
+};
+
+module.exports.getVoteCount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const election = await Election.findById(id).populate({
+      path: "candidates",
+      options: { sort: { voteCount: "desc" } },
+    });
+    const user = await User.findById(userId);
+    const electionId = election._id.toString();
+    if (user.joinedElection.indexOf(electionId) === -1)
+      return res
+        .status(403)
+        .json({ message: "can't see vote count without participation" });
+    return res.json({ candidates: election.candidates });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Define the schema
 const adminKeySchema = new Schema({
   key: {
     type: String,
@@ -13,14 +12,14 @@ const adminKeySchema = new Schema({
   },
   expiresAt: {
     type: Date,
-    default: function() {
-      // Adds 0.1 hours (6 minutes) to the current date and time
+    default: function () {
       return new Date(Date.now() + 0.3 * 60 * 60 * 1000);
     },
+    index: { expires: 300 },//auto deletes after 5 mins of expiring
   },
 });
 
-// Create and export the model
-const AdminKey = mongoose.model('AdminKey', adminKeySchema);
+const AdminKey = mongoose.model("AdminKey", adminKeySchema);
 
 module.exports = AdminKey;
+

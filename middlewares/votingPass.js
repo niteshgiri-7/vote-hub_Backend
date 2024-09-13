@@ -5,7 +5,7 @@ const isRoleUser = async(req,res,next)=>{
     if(userRole =="admin"){
         return res.status(403).json({message:"admin cannot vote"});
     }
-    next();
+  return  next();
 }
 
 module.exports = isRoleUser;

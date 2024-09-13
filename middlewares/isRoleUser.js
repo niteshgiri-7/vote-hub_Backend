@@ -7,7 +7,7 @@ const isRoleUser = async(req,res,next)=>{
     if(user?.role==='admin'){
         return res.status(403).json({message:"admin cannot vote"});
     }
-    next();
+   return next();
 
    }
 

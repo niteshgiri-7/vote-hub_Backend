@@ -71,29 +71,12 @@ module.exports.vote = async (req, res) => {
     await user.save();
     return res.status(200).json({ message: "voted Successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "error occurred while voting", err: err.message });
+    res.status(500).json({ message: "Internal Error Occurred" });
     console.log(err);
   }
 };
 
-module.exports.seeVoteCount = async (req, res) => {
-  try {
-    const candidate = await Candidate.find().sort({ voteCount: "desc" });
-    const record = candidate.map((candidateData) => {
-      return {
-        name: candidateData.name,
-        party: candidateData.party,
-        voteCount: candidateData.voteCount,
-      };
-    });
-    res.status(200).json({ records: record });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err.message);
-  }
-};
+
 
 module.exports.seeAllCandidates = async (req, res) => {
   try {

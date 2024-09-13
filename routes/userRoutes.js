@@ -3,6 +3,7 @@ const { jwtVerify } = require("../authMiddleware/jwtAuth");
 const validateId = require("../middlewares/validateId");
 const checkAdminKey = require("../middlewares/checkAdminKey");
 const isRoleUser = require("../middlewares/isRoleUser");
+const canJoin = require("../middlewares/canJoin");
 const userControl = require("../controllers/userControl");
 const electionControl = require("../controllers/electionControl");
 
@@ -19,9 +20,15 @@ Router.post(
   validateId,
   jwtVerify,
   isRoleUser,
+  canJoin,
   userControl.joinElection
 );
 
-Router.get("/get-elections",jwtVerify,isRoleUser, electionControl.viewAllElectionVoter);
+Router.get(
+  "/get-elections",
+  jwtVerify,
+  isRoleUser,
+  electionControl.viewAllElectionVoter
+);
 
 module.exports = Router;

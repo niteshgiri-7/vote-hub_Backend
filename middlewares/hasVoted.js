@@ -10,7 +10,7 @@ const hasVoted = async (req, res, next) => {
   if (user.votedElection.indexOf(electionId) !== -1)
     return res.status(403).json({ message: "Already voted in this election" });
 
-  next();
+ return next();
 };
 
 module.exports = hasVoted;
