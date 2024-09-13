@@ -1,129 +1,55 @@
-# Endpoints
- ## Sign Up
-- Register a new user in the system. If a user tries to register as an admin and an admin already exists, it will return an error.
-  
-## POST /signup
--Request Body:
-```
-{
-  "name": "string",
-  "email": "string",
-  "citizenshipNo": "string",
-  "password": "string",
-  "role": "string" // E.g., 'admin' or 'user'
-}
-```
-- Responses:
-- 200 OK: User registered successfully.
-```
-{
-  "token": "string",
-  "message": "user created successfully",
-  "id": "string"
-}
-403 Forbidden: Admin already exists.
-{
-  "message": "Admin already exists"
-}
-500 Internal Server Error: Server encountered an error.
-{
-  "err": "error message"
-}
-```
-# Login
+# Vote-Hub API
+## Overview
+**Vote-Hub is a voting platform API designed to handle elections where admins can create elections,and manage candidates. It allows users to participate as voters by joining elections and caste a vote. Admins and Voters have their specific roles.**
 
-- Login a user with citizenship number and password.
+## Features
+### Admin
 
-## POST /login
-Request Body:
-```
-{
-  "citizenshipNo": "string",
-  "password": "string"
-}
-```
-- Responses:
-- 200 OK: Login successful.
-```{
-  "token": "string",
-  "message": "login successful",
-  "id": "string"
-}
+**Admin Key Generation**: Admins must have an admin key(described later to get a key) to sign up as an admin.
 
-- 404 Not Found: User not found.
+**Sign Up as Admin**: Admins use the generated key to complete their registration.
 
-{
-  "message": "user not found"
-}
-- 501 Not Implemented: Incorrect password.
+**Create Election**: Admins can create multiple elections.
 
-{
-  "message": "incorrect Password"
-}
-- 500 Internal Server Error: Server encountered an error.
+**Add Candidates**: Admins can add candidates to the elections they have created.
 
-{
-  "error": "internal server error"
-}
-```
-# View Profile
+**View Created Elections**: Admins can view the list of elections they have created.
 
-- View the profile of a user by their ID.
-  
-## GET /profile/:id
+**Authorization**: Admins can only manage the elections they have personally created.
 
-- Parameters:
-- id (string): The user's ID.
-- Responses:
-- 200 OK: User profile retrieved successfully.
+### Voter
+**Sign Up as Voter**: Users can sign up as voters.
 
-```
-{
-  "userdata": {
-    "_id": "string",
-    "name": "string",
-    "citizenshipNo": "string",
-    "email": "string"
-  }
-}
--404 Not Found: User not found.
-{
-  "message": "user not found"
-}
-- 500 Internal Server Error: Server encountered an error.
-{
-  "error": "internal server error"
-}
-```
-# Change Password
-- Change the password of a user by verifying their citizenship number and current password.
+**Join Elections**: Voters must join elections to be eligible vote.
+ Cannot join already(started/ended) elections.
 
-## PUT /change-password
-Request Body:
-```
-{
-  "citizenshipNo": "string",
-  "password": "string",    // Current password
-  "newPassword": "string"  // New password
-}
-```
-- Responses:
-- 200 OK: Password changed successfully.
-```
-{
-  "message": "password changed successfully"
-}
-- 501 Not Implemented: Incorrect old password or new password is the same as the old one.
+**Vote**: Voters can cast a single vote for one candidate per election they have joined.
 
-{
-  "message": "incorrect old password"
-}
+**View Joined Elections**: Voters can only view the list of elections they have joined.
 
-{
-  "message": "new password cannot be same as old password"
-}
-- 500 Internal Server Error: Server encountered an error.
-{
-  "error": "internal server error"
-}
-```
+**See Vote Counts**: Voters can only view vote counts of the candidates in the elections they have joined.
+
+## API Workflow
+ ### Admin Registration:
+
+- Generate an admin key.
+- Use the key to sign up as an admin.
+
+### Election Management Admin:
+- can  creates an election.
+- can  adds candidates to the election.
+- can view a list of elections they have created.
+
+### Voter Registration:
+
+- Voter signs up as a voter.
+- Voter joins election using election Id.
+- Voter casts a vote for a single candidate in the (participated)election.
+- Voter views vote counts of candidates in elections they have joined.
+
+## Rules and Restrictions
+- Admins are authorized only for the elections they have created.
+- Voters must join elections to be able to vote.
+- Voters cannot join an election after it has started or ended.
+- Voters can only vote once per election and only for candidates in the elections they have joined.
+- Vote counts are only visible to voters for elections they have joined.

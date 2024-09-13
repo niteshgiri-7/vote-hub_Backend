@@ -25,9 +25,10 @@ const userSchema = new schema({
          default:"voter",
          required:true
     },
-    isVoted:{
-        type:Boolean,
-        default:false
+    key:{
+        type:String,
+        required:false,
+        default:null,
     },
     citizenshipNo:{
         type:String,
@@ -37,7 +38,15 @@ const userSchema = new schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    joinedElection:[{
+        type:schema.Types.ObjectId,
+        ref:"Election"
+    }],
+    votedElection:[{
+        type:schema.Types.ObjectId,
+        ref:'Election',
+    }]
 })
 
 

@@ -1,3 +1,4 @@
 #ignore modeules
 node_modules/
 .env
+package-lock.json

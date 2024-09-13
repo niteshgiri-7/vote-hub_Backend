@@ -13,23 +13,9 @@ const candidate = new schema({
     },
     party: {
         type: String,
-        required: true,
+        default:null,
        
     },
-    votes: [
-        {
-            user: {
-                type: mongoose.Types.ObjectId,
-                ref: "users"
-            }
-        },
-        {
-            createddAt: {
-                type: Date,
-                default: Date.now
-            }
-        }
-    ],
     voteCount: {
         type: Number,
         default: 0
@@ -38,6 +24,10 @@ const candidate = new schema({
         type:String,
         required:true,
         unique:true
+    },
+    electionId:{
+        type:schema.Types.ObjectId,
+        ref:"Election"
     }
 })
 

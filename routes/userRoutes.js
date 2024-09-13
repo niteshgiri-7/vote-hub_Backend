@@ -1,16 +1,34 @@
 const Router = require("express").Router();
 const { jwtVerify } = require("../authMiddleware/jwtAuth");
 const validateId = require("../middlewares/validateId");
+const checkAdminKey = require("../middlewares/checkAdminKey");
+const isRoleUser = require("../middlewares/isRoleUser");
+const canJoin = require("../middlewares/canJoin");
 const userControl = require("../controllers/userControl");
+const electionControl = require("../controllers/electionControl");
 
+Router.post("/signUp", checkAdminKey, userControl.signUp);
 
-Router.post("/signUp", userControl.signUp);
+Router.post("/login", userControl.login);
 
-
-Router.post("/login",userControl.login);
-
-Router.get("/profile/:id", jwtVerify,validateId, userControl.viewProfile);
+Router.get("/profile/:id", jwtVerify, validateId, userControl.viewProfile);
 
 Router.put("/password", jwtVerify, userControl.changePassword);
+
+Router.post(
+  "/join-election/:id",
+  validateId,
+  jwtVerify,
+  isRoleUser,
+  canJoin,
+  userControl.joinElection
+);
+
+Router.get(
+  "/get-elections",
+  jwtVerify,
+  isRoleUser,
+  electionControl.viewAllElectionVoter
+);
 
 module.exports = Router;
