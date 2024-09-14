@@ -1,18 +1,23 @@
 const express = require("express");
-const app = express();
+const cors = require("cors");
 const bodyParser = require("body-parser");
+const db = require("./db"); 
+const userRoutes = require("./routes/userRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const resultRoutes = require("./routes/resultRoutes");
+const voterRoutes = require("./routes/voterRoutes");
+
+const app = express();
 const PORT = 3000;
 
-app.use(bodyParser.json());
-const db = require("./db");
-const userRoutes = require("./routes/userRoutes");
-const candidateRoutes = require("./routes/candidateRoutes");
-const adminRoutes = require("./routes/adminRoutes");
-const voteCountRoutes = require("./routes/voteCountRoutes");
+app.use(cors()); //allowed any origin
+app.use(bodyParser.json()); 
+
 app.use("/user", userRoutes);
-app.use("/candidate", candidateRoutes);
+app.use("/voter", voterRoutes);
 app.use("/admin", adminRoutes);
-app.use("/election", voteCountRoutes);
+app.use("/election", resultRoutes);
+
 app.listen(PORT, () => {
   console.log(`server started at ${PORT}`);
 });
