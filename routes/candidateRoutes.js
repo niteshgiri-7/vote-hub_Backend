@@ -7,6 +7,7 @@ const candidateControl = require("../controllers/CandidateControl");
 const isAdmin = require("../middlewares/isAdmin");
 const validateAdminCandidateLink = require("../middlewares/adminLinkValidation/validateAdminCandidateLink");
 const validateAdminElectionLink = require("../middlewares/adminLinkValidation/validateAdminElectionlink");
+const hasElectionEnded = require("../middlewares/hasElectionEnded");
 
 
 
@@ -24,9 +25,10 @@ Router.delete(
 Router.post(
   "/vote/:id",
   jwtVerify,
-  isRoleUser,
   validateId,
+  isRoleUser,
   hasVoted,
+  hasElectionEnded,
   candidateControl.vote
 );
 

@@ -9,4 +9,5 @@ Router.get(
   electionControl.getVoteCount
 );
 
+Router.get("/:id/get-result",jwtVerify,validateId,electionControl.getElectionResult);
 module.exports = Router;
