@@ -1,24 +1,26 @@
-const Candidate = require("../models/candidates");
 const User = require("../models/users");
 const Election = require("../models/election");
+const Candidate = require("../models/candidates");
 module.exports.addNewCandidate = async (req, res) => {
   try {
-    const { name, age, regNo, electionId } = req.body;
-    const admin = req.user;
-    if (!name || !age || !regNo || !electionId) {
+    const { id } = req.params; //electionId
+    const { name, age, regNo, party } = req.body;
+    if (!name || !age || !regNo) {
       return res.status(400).json({ error: "incomplete data" });
     }
     const regNum = await Candidate.findOne({ regNo: regNo });
     if (regNum) return res.status(409).json({ error: "regNo already exists" });
-    const election = await Election.findById(electionId);
+    const election = await Election.findById(id);
     if (!election)
       return res.status(404).json({ message: "Invalid electionId" });
     const newCandidate = new Candidate({
       name,
       age,
       regNo,
-      electionId,
+      party,
+      electionId:id,
     });
+    console.log(newCandidate);
     const savedCandidate = await newCandidate.save();
 
     election?.candidates.push(savedCandidate._id);
@@ -52,38 +54,37 @@ module.exports.removeCandidate = async (req, res) => {
   }
 };
 
-module.exports.vote = async (req, res) => {
+module.exports.createElection = async (req, res) => {
   try {
-    const { id } = req.params; //candidate ID
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-
-    const candidate = await Candidate.findById(id).populate("electionId");
-    const electionId = candidate.electionId._id.toString();
-    if (user.joinedElection.indexOf(electionId) === -1)
-      return res
-        .status(403)
-        .json({ message: "can't vote without participation" });
-
-    candidate.voteCount++;
-    await candidate.save();
-    user.votedElection.push(electionId);
-    await user.save();
-    return res.status(200).json({ message: "voted Successfully" });
-  } catch (err) {
-    res.status(500).json({ message: "Internal Error Occurred" });
-    console.log(err);
+    const { name, description, startsAt, endsAt } = req.body;
+    const admin = req.user;
+    if (!name || !description || !startsAt || !endsAt)
+      return res.status(400).json({ error: "No content" });
+    const newElection = new Election({
+      name,
+      description,
+      startsAt,
+      endsAt,
+      createdBy: admin.id,
+    });
+    const savedElection = await newElection.save();
+    return res.status(200).json({ response: savedElection });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
-
-module.exports.seeAllCandidates = async (req, res) => {
+module.exports.viewAllElections = async (req, res) => {
   try {
-    const candidate = await Candidate.find().select("name party ");
-    res.status(200).json({ canidates: candidate });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err.message });
+    const userId = req.user.id;
+    const elections = await Election.find({ createdBy: userId }).populate(
+      "candidates"
+    );
+    console.log(elections);
+    res.status(200).json({ message: elections });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

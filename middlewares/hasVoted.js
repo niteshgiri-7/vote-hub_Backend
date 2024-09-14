@@ -9,8 +9,7 @@ const hasVoted = async (req, res, next) => {
   const electionId = candidate.electionId._id.toString();
   if (user.votedElection.indexOf(electionId) !== -1)
     return res.status(403).json({ message: "Already voted in this election" });
-
- return next();
+  return next();
 };
 
 module.exports = hasVoted;

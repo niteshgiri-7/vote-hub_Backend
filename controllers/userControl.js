@@ -93,26 +93,4 @@ module.exports.changePassword = async (req, res) => {
   }
 };
 
-module.exports.joinElection = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user.id;
-    const election = await Election.findById(id);
-    if (!election)
-      return res.status(404).json({ message: "Election Not found" });
-    const user = await User.findById(userId).select("-password");
 
-    if (user?.joinedElection.indexOf(id) !== -1)
-      return res
-        .status(409)
-        .json({ message: "You have already joined that election" });
-    else user.joinedElection.push(id);
-    const savedUser = await user.save();
-    return res
-      .status(200)
-      .json({ message: "election joined", user: savedUser });
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-    console.log("hi",error.message);
-  }
-};
