@@ -39,29 +39,24 @@ module.exports.viewAllElectionVoter = async (req, res) => {
   try {
     const userId = req.user?.id;
 
-    // Find the user and populate the 'joinedElection' field
     const user = await User.findById(userId)
       .populate("joinedElection")
       .populate("votedElection");
 
-    // Check if user exists
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Send the populated elections data
     res.status(200).json({
       joinedElections: user.joinedElection,
       votedElections: user.votedElection,
     });
 
-    // Log the populated data for debugging
     console.log({
       joinedElections: user.joinedElection,
       votedElections: user.votedElection,
     });
   } catch (error) {
-    // Handle errors and log them
     res.status(500).json({ message: "Internal Server Error" });
     console.log(error.message);
   }
@@ -84,6 +79,23 @@ module.exports.getVoteCount = async (req, res) => {
     return res.json({ candidates: election.candidates });
   } catch (err) {
     console.log(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports.getElectionResult = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const election = await Election.findById(id).populate("candidates");
+    if (!election)
+      return res.status(404).json({ message: "Election not found" });
+    const endsAt = election.endsAt;
+    if (Date.now() < endsAt)
+      return res.status(403).json({ message: "Election has not ended yet" });
+    const candidates = election.cadidates;
+    res.status(200).json({ candidates: candidates });
+  } catch (error) {
+    console.log(error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
